@@ -1,7 +1,7 @@
 {
   "_version": "1.28.0",
   "sap.app": {
-    "id": "project1",
+    "id": "de.rewag.plugin.clientinfo",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
@@ -14,17 +14,6 @@
       "id": "@sap/generator-fiori:basic",
       "version": "1.8.3",
       "toolsId": "a4f9d7b1-7781-4da3-9596-d89a3d373eb1"
-    },
-    "dataSources": {
-      "mainService": {
-        "uri": "/sap/opu/odata/any/OCR_ADMIN_SRV/",
-        "type": "OData",
-        "settings": {
-          "annotations": [],
-          "localUri": "localService/metadata.xml",
-          "odataVersion": "2.0"
-        }
-      }
     }
   },
   "sap.ui": {
@@ -46,7 +35,7 @@
   "sap.ui5": {
     "flexEnabled": true,
     "dependencies": {
-      "minUI5Version": "1.84.18",
+      "minUI5Version": "1.136.22",
       "libs": {
         "sap.m": {},
         "sap.ui.core": {},
@@ -66,56 +55,12 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "project1.i18n.i18n"
-        }
-      },
-      "": {
-        "dataSource": "mainService",
-        "preload": true,
-        "settings": {}
-      }
-    },
-    "resources": {
-      "css": [
-        {
-          "uri": "css/style.css"
-        }
-      ]
-    },
-    "routing": {
-      "config": {
-        "routerClass": "sap.m.routing.Router",
-        "viewType": "XML",
-        "async": true,
-        "viewPath": "project1.view",
-        "controlAggregation": "pages",
-        "controlId": "app",
-        "clearControlAggregation": false
-      },
-      "routes": [
-        {
-          "name": "RouteView1",
-          "pattern": ":?query:",
-          "target": [
-            "TargetView1"
-          ]
-        }
-      ],
-      "targets": {
-        "TargetView1": {
-          "viewType": "XML",
-          "transition": "slide",
-          "clearControlAggregation": false,
-          "viewId": "View1",
-          "viewName": "View1"
+          "bundleName": "de.rewag.plugin.clientinfo.i18n.i18n"
         }
       }
-    },
-    "rootView": {
-      "viewName": "project1.view.App",
-      "type": "XML",
-      "async": true,
-      "id": "App"
     }
+  },
+  "sap.flp": {
+    "type": "plugin"
   }
 }

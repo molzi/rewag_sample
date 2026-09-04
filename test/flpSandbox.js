@@ -61,8 +61,8 @@ sap.ui.define([
 								},
 								"resolutionResult": {
 									"applicationType": "SAPUI5",
-									"additionalInformation": "SAPUI5.Component=project1",
-									"url": sap.ui.require.toUrl("project1")
+									"additionalInformation": "SAPUI5.Component=de.rewag.plugin.clientinfo",
+									"url": sap.ui.require.toUrl("de.rewag.plugin.clientinfo")
 								}
 							}
 						}

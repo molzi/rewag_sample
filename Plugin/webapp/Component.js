@@ -24,60 +24,24 @@ sap.ui.define([
             init: function () {
                 var rendererPromise = this._getRenderer();
 
-                // This is example code. Please replace with your implementation!
-                /**
-                 * Add a footer with a button
-                 */
-                rendererPromise.then(function (oRenderer) {
-                    oRenderer.setFooterControl("sap.m.Bar", {
-                        id: "myFooter",
-                        contentLeft: [new Button({
-                            text: "Important Information",
-                            press: function () {
-                                MessageToast.show("This SAP Fiori Launchpad has been extended to improve your experience");
-                            }
-                        })]
-                    });
-                });
-
                 /**
                  * Add item to the header
                  */
                 rendererPromise.then(function (oRenderer) {
-                    oRenderer.addHeaderItem({
-                        icon: "sap-icon://add",
-                        tooltip: "Add bookmark",
-                        press: function () {
-                            MessageToast.show("This SAP Fiori Launchpad has been extended to improve your experience");
+                    let metas = document.getElementsByTagName("meta");
+                    let sTitle;
+                    for (let meta of metas) {
+                        if(meta.name === "sap.ushellConfig.serverSideConfig.1") {
+                            let oInfos = JSON.parse(meta.content).startupConfig;
+                            sTitle = oInfos.system + " / " + oInfos.client + " / " + sap.ushell.Container.getUser().getFullName();
                         }
-                    }, true, true);
-                });
+                    }
 
-                /**
-                 * Add two buttons to the options bar (previous called action menu) in the Me Area.
-                 * The first button is only visible if the Home page of SAP Fiori launchpad is open.
-                 */
-                rendererPromise.then(function (oRenderer) {
-                    oRenderer.addActionButton("sap.m.Button", {
-                        id: "myHomeButton",
-                        icon: "sap-icon://sys-help-2",
-                        text: "Help for FLP page",
-                        press: function () {
-                            MessageToast.show("You pressed the button that opens a help page.");
-                        }
-                    }, true, false, [sap.ushell.renderers.fiori2.RendererExtensions.LaunchpadState.Home]);
-
-                    /*
-                     * The second button is only visible when an app is open.
-                     */
-                    oRenderer.addActionButton("sap.m.Button", {
-                        id: "myAppButton",
-                        icon: "sap-icon://sys-help",
-                        text: "Help for App page",
-                        press: function () {
-                            MessageToast.show("You pressed the button that opens a help for apps page.");
-                        }
-                    }, true, false, [sap.ushell.renderers.fiori2.RendererExtensions.LaunchpadState.App]);
+                    if(sTitle !== undefined) {
+                        oRenderer.setHeaderTitle(sTitle);
+                    } else {
+                        oRenderer.setHeaderTitle("Client Information missing");
+                    }
                 });
             },
             /**

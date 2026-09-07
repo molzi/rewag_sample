@@ -5,10 +5,12 @@
 sap.ui.define([
     "sap/ui/core/Component",
     "sap/m/Button",
-	"sap/m/Bar",
-	"sap/m/MessageToast"
+    "sap/m/Bar",
+    "sap/m/MessageToast",
+    "sap/ui/VersionInfo",
+    "sap/ushell/Container"
 ],
-    function (Component, Button, Bar, MessageToast) {
+    function (Component, Button, Bar, MessageToast, VersionInfo, Container) {
         "use strict";
 
         return Component.extend("de.rewag.plugin.clientinfo.Component", {
@@ -22,27 +24,45 @@ sap.ui.define([
              * @override
              */
             init: function () {
-                var rendererPromise = this._getRenderer();
+                const rendererPromise = this._getRenderer();
 
-                /**
-                 * Add item to the header
-                 */
-                rendererPromise.then(function (oRenderer) {
-                    let metas = document.getElementsByTagName("meta");
-                    let sTitle;
-                    for (let meta of metas) {
-                        if(meta.name === "sap.ushellConfig.serverSideConfig.1") {
-                            let oInfos = JSON.parse(meta.content).startupConfig;
-                            sTitle = oInfos.system + " / " + oInfos.client + " / " + sap.ushell.Container.getUser().getFullName();
-                        }
+                let metas = document.getElementsByTagName("meta");
+                let sTitle;
+                for (let meta of metas) {
+                    if (meta.name === "sap.ushellConfig.serverSideConfig.1") {
+                        let oInfos = JSON.parse(meta.content).startupConfig;
+                        sTitle = oInfos.system + " / " + oInfos.client + " / " + sap.ushell.Container.getUser().getFullName();
                     }
+                }
 
-                    if(sTitle !== undefined) {
-                        oRenderer.setHeaderTitle(sTitle);
+                VersionInfo.load().then((version) => {
+                    const minorVersion = version.version.split(".").at(1);
+
+                    if (parseInt(minorVersion) >= 120) {
+                        Container.getServiceAsync("Extension").then(Extension => {
+                            Extension.createHeaderItem({
+                                ariaLabel: "headerItemSID-ariaLabel",
+                                tooltip: "headerItem-tooltip",
+                                text: sTitle !== undefined ? sTitle : "Client Information missing",
+                            }, {
+                                position: "begin",
+                                helpId: "myHeaderItemHelpId"
+                            });
+                        });
+
                     } else {
-                        oRenderer.setHeaderTitle("Client Information missing");
+
+                        rendererPromise.then(function (oRenderer) {
+
+                            if (sTitle !== undefined) {
+                                oRenderer.setHeaderTitle(sTitle);
+                            } else {
+                                oRenderer.setHeaderTitle("Client Information missing");
+                            }
+                        });
                     }
                 });
+
             },
             /**
          * Returns the shell renderer instance in a reliable way,

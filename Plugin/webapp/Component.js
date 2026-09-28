@@ -8,9 +8,10 @@ sap.ui.define([
     "sap/m/Bar",
     "sap/m/MessageToast",
     "sap/ui/VersionInfo",
-    "sap/ushell/Container"
+    "sap/ushell/Container",
+    "sap/m/Title"
 ],
-    function (Component, Button, Bar, MessageToast, VersionInfo, Container) {
+    function (Component, Button, Bar, MessageToast, VersionInfo, Container, Title) {
         "use strict";
 
         return Component.extend("de.rewag.plugin.clientinfo.Component", {
@@ -38,17 +39,23 @@ sap.ui.define([
                 VersionInfo.load().then((version) => {
                     const minorVersion = version.version.split(".").at(1);
 
-                    if (parseInt(minorVersion) >= 120) {
-                        Container.getServiceAsync("Extension").then(Extension => {
-                            Extension.createHeaderItem({
-                                ariaLabel: "headerItemSID-ariaLabel",
-                                tooltip: "headerItem-tooltip",
-                                text: sTitle !== undefined ? sTitle : "Client Information missing",
+                    if (parseInt(minorVersion) >= 124) {
+                        Container.getServiceAsync("FrameBoundExtension").then(FrameBoundExtension => {
+                            const customSID = FrameBoundExtension.createSubHeader({
+                                id: "customSIDHeader",
+                                
+                                contentMiddle: [new Title({
+                                    text: sTitle || "Client information missing"
+                                })],
                             }, {
-                                position: "begin",
-                                helpId: "myHeaderItemHelpId"
+                                controlType: "sap.m.Bar"
+                            })
+
+                            customSID.then((control) => {
+                                control.showOnHome();
+                                control.showForAllApps();
                             });
-                        });
+                        })
 
                     } else {
 
